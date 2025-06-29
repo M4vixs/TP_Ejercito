@@ -5,10 +5,6 @@ import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 public class Ejercito {
-
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         ArrayList<Usuario>users=new ArrayList<>();
         ArrayList<Cuartel>cuarteles=new ArrayList<>();
