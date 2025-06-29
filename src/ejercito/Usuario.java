@@ -1,10 +1,10 @@
-
 package ejercito;
 
 import javax.swing.JOptionPane;
 
 
 public class Usuario  {
+    private static int contadorCodigo = 1; // Contador estático para generar códigos únicos
     private int codigo;
     private String nombre;
     private Cuerpo tipoCuerpo;
@@ -12,11 +12,32 @@ public class Usuario  {
     private Cuartel cuart;
 
     public Usuario( String nombre, Cuerpo tipoCuerpo, Compania comp, Cuartel cuart) {
-        this.codigo = codigo;
+        this.codigo = contadorCodigo++; // Asignar código único y incrementar contador
         this.nombre = nombre;
         this.tipoCuerpo = tipoCuerpo;
         this.comp = comp;
         this.cuart = cuart;
+    }
+
+    // Métodos getter para acceder a los atributos privados
+    public int getCodigo() {
+        return codigo;
+    }
+    
+    public String getNombre() {
+        return nombre;
+    }
+    
+    public Cuerpo getTipoCuerpo() {
+        return tipoCuerpo;
+    }
+    
+    public Compania getComp() {
+        return comp;
+    }
+    
+    public Cuartel getCuart() {
+        return cuart;
     }
 
     public void MostrarDatos(){
@@ -29,6 +50,7 @@ public class Usuario  {
    public void consultar() {
           
     }
+    
     
   
 }
