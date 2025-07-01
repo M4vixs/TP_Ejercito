@@ -1,8 +1,15 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package ejercito;
 
+/**
+ *
+ * @author enzol
+ */
 public class ConsolaUtil {
-    
-    /**
+     /**
      * Limpia la consola usando comandos del sistema operativo
      * Equivalente a system("cls") en C
      */
@@ -23,6 +30,4 @@ public class ConsolaUtil {
             }
         }
     }
-    
-   
 }

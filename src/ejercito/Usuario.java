@@ -1,25 +1,28 @@
 package ejercito;
 
-import javax.swing.JOptionPane;
+public class Usuario extends Identificable{
 
-
-public class Usuario  {
-    private static int contadorCodigo = 1; // Contador estático para generar códigos únicos
-    private int codigo;
     private String nombre;
     private Cuerpo tipoCuerpo;
     private Compania comp;
     private Cuartel cuart;
+    private Gestion db;
 
-    public Usuario( String nombre, Cuerpo tipoCuerpo, Compania comp, Cuartel cuart) {
-        this.codigo = contadorCodigo++; // Asignar código único y incrementar contador
+    public Usuario(int codigo) {
+        super(codigo);
+    }
+
+    public Usuario(int codigo,String nombre, Cuerpo tipoCuerpo, Compania comp, Cuartel cuart, Gestion db) {
+        super(codigo);
         this.nombre = nombre;
         this.tipoCuerpo = tipoCuerpo;
         this.comp = comp;
         this.cuart = cuart;
+        this.db = db;
     }
 
     // Métodos getter para acceder a los atributos privados
+    @Override
     public int getCodigo() {
         return codigo;
     }
@@ -40,6 +43,10 @@ public class Usuario  {
         return cuart;
     }
 
+    public Gestion getDb() {
+        return db;
+    }
+
     public void MostrarDatos(){
         System.out.println("Codigo Usuario: " + this.codigo);
         System.out.println("Nombre: " + this.nombre);
@@ -47,10 +54,4 @@ public class Usuario  {
         System.out.println("Compania: " + this.comp.getDenominacion_compania()); // Suponiendo que Compania tiene getDenominacion()
         System.out.println("Cuartel: " + this.cuart.getNombre_cuartel()); 
     }
-   public void consultar() {
-          
-    }
-    
-    
-  
 }

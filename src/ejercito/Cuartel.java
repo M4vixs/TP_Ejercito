@@ -1,19 +1,23 @@
-
 package ejercito;
 
-public class Cuartel {
-    private int codigo_cuartel;
+import java.util.ArrayList;
+
+public class Cuartel extends Identificable{
     private String nombre_cuartel;
     private String ubicacion;
+    private ArrayList<Usuario>UsuarioCuartel;
 
-    public Cuartel( String nombre_cuartel, String ubicacion) {
-        this.codigo_cuartel++;
+    public Cuartel( int codigo,String nombre_cuartel, String ubicacion) {
+        super(codigo);
         this.nombre_cuartel = nombre_cuartel;
         this.ubicacion = ubicacion;
+        this.UsuarioCuartel = new ArrayList();
     }
 
-    public int getCodigo_cuartel() {
-        return codigo_cuartel;
+
+
+    public Cuartel(int codigo) {
+        super(codigo);
     }
 
     public String getNombre_cuartel() {
@@ -23,8 +27,14 @@ public class Cuartel {
     public String getUbicacion() {
         return ubicacion;
     }
-    
-    
-    
-    
+
+
+    public ArrayList<Usuario> getUsuarioCuartel() {
+        return UsuarioCuartel;
+    }
+    public void MostrarUsuariosAsignados(){
+        for (Usuario usuario : UsuarioCuartel) {
+            usuario.MostrarDatos();
+        }
+    }
 }

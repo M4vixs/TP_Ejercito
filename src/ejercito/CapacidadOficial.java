@@ -1,14 +1,19 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
+ */
 package ejercito;
 
+/**
+ *
+ * @author enzol
+ */
 public interface CapacidadOficial {
-    private Cuartel CrearCuartel(Cuartel cua){
-        return cua;
-    }
-    private Cuerpo CrearCuerpo(Cuerpo cuerpo1){
-        return cuerpo1;
-    }
-    private Compania CrearCompania(Compania comp1){
-        return comp1;
-    }
+    public void CrearCuartel(Cuartel cua);
+    public void CrearCuerpo(Cuerpo cuerpo1);
+    public void CrearCompania(Compania comp1);
+    
+    public void AsignarUsuarioCuartel(int codigoUser , int codigoCuartel);
+    public void AsignarUsuarioCuerpo(int codigoUser , int codigoCuerpo);
+    public void AsignarUsuarioCompania(int codigoUser , int codigoCompania);
 }

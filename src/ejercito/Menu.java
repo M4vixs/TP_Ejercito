@@ -1,7 +1,13 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
+ */
 package ejercito;
 
-
-public  interface Menu {
+/**
+ *
+ * @author enzol
+ */
+public interface Menu {
     public void mostrarMenu();
 }

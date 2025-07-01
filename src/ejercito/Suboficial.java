@@ -1,30 +1,23 @@
 package ejercito;
 
 import java.util.Scanner;
-import java.io.File;
-import java.lang.reflect.Constructor;
 import java.util.Date;
+import java.io.File;
 
 public class Suboficial extends Usuario implements Menu,CapacidadServicios{
     private Scanner scanner;
-    private Gestion gestion;
 
-    public Suboficial(String nombre, Cuerpo tipoCuerpo, Compania comp, Cuartel cuart, Gestion gestion) {
-        super(nombre, tipoCuerpo, comp, cuart);
-        this.scanner = new Scanner(System.in);
-        this.gestion = gestion;
+    public Suboficial(Scanner scanner, int codigo, String nombre, Cuerpo tipoCuerpo, Compania comp, Cuartel cuart, Gestion DB) {
+        super(codigo, nombre, tipoCuerpo, comp, cuart, DB);
+        this.scanner = scanner;
     }
-
     
-
-    @Override
-    public void consultar() {
-        //mostrarDatos();
-    }
-
+    
+    
     @Override
     public Servicios AgregarServicios(Servicios s) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // Implementación básica - retorna el servicio sin modificar
+        return s;
     }
     
     @Override
@@ -49,7 +42,7 @@ public class Suboficial extends Usuario implements Menu,CapacidadServicios{
 
         switch(opcion) {
             case 1:
-                gestion.mostrarTodosLosUsuarios();
+                this.getDb().mostrarTodosLosUsuarios();
                 System.out.println("\nPresione Enter para continuar...");
                 scanner.nextLine(); // Esperar Enter
                 scanner.nextLine(); // Esperar Enter
@@ -57,57 +50,14 @@ public class Suboficial extends Usuario implements Menu,CapacidadServicios{
             case 2:
                 System.out.print("Ingrese el código del usuario a buscar: ");
                 int codigo = scanner.nextInt();
-                gestion.buscarYMostrarUsuarioPorCodigo(codigo);
+                this.getDb().buscarYMostrarUsuarioPorCodigo(codigo);
                 System.out.println("\nPresione Enter para continuar...");
                 scanner.nextLine(); // Limpiar buffer
                 scanner.nextLine(); // Esperar Enter
                 break;
             case 3:
                 ConsolaUtil.limpiar();
-                System.out.print("Ingrese el código del soldado: ");
-                int codSoldado = scanner.nextInt();
-                Usuario usuario = gestion.buscarUsuarioPorCodigo(codSoldado);
-                if (usuario != null && usuario instanceof Soldado) {
-                    // Descubrir servicios dinámicamente
-                    File dir = new File("src/ejercito");
-                    File[] files = dir.listFiles((d, name) -> name.endsWith(".java") && !name.equals("Servicios.java"));
-                    if (files == null) files = new File[0];
-                    Class<?>[] clasesServicios = new Class<?>[files.length];
-                    int idx = 0;
-                    for (File f : files) {
-                        String className = f.getName().replace(".java", "");
-                        try {
-                            Class<?> clazz = Class.forName("ejercito." + className);
-                            if (Servicios.class.isAssignableFrom(clazz) && !clazz.equals(Servicios.class)) {
-                                clasesServicios[idx++] = clazz;
-                            }
-                        } catch (Exception e) { /* ignorar */ }
-                    }
-                    // Mostrar opciones
-                    System.out.println("Seleccione el servicio a asignar:");
-                    for (int i = 0; i < idx; i++) {
-                        System.out.println((i+1) + ". " + clasesServicios[i].getSimpleName());
-                    }
-                    int tipoServicio = scanner.nextInt();
-                    if (tipoServicio < 1 || tipoServicio > idx) {
-                        System.out.println("Tipo de servicio inválido.");
-                        break;
-                    }
-                    Class<?> claseSeleccionada = clasesServicios[tipoServicio-1];
-                    System.out.print("Ingrese el código del servicio: ");
-                    int codServicio = scanner.nextInt();
-                    Date fecha = new Date();
-                    try {
-                        Constructor<?> cons = claseSeleccionada.getConstructor(Date.class, int.class);
-                        Servicios servicio = (Servicios) cons.newInstance(fecha, codServicio);
-                        ((Soldado)usuario).asignarServicio(servicio);
-                        System.out.println("Servicio asignado correctamente.");
-                    } catch (Exception e) {
-                        System.out.println("Error al crear el servicio: " + e.getMessage());
-                    }
-                } else {
-                    System.out.println("No se encontró un soldado con ese código.");
-                }
+                asignarServicioASoldado();
                 System.out.println("\nPresione Enter para continuar...");
                 scanner.nextLine(); // Limpiar buffer
                 scanner.nextLine(); // Esperar Enter
@@ -124,8 +74,76 @@ public class Suboficial extends Usuario implements Menu,CapacidadServicios{
         }
     }
     
+    // Método auxiliar para asignar servicio a soldado
+    private void asignarServicioASoldado() {
+        System.out.print("Ingrese el código del soldado: ");
+        int codSoldado = scanner.nextInt();
+        Usuario usuario = this.getDb().buscarUsuarioPorCodigo(codSoldado);
+        
+        if (usuario == null || !(usuario instanceof Soldado)) {
+            System.out.println("No se encontró un soldado con ese código.");
+            return;
+        }
+        
+        // Buscar servicios dinámicamente
+        Class<?>[] servicios = obtenerServicios();
+        if (servicios.length == 0) {
+            System.out.println("No hay servicios disponibles.");
+            return;
+        }
+        
+        // Mostrar menú dinámico
+        System.out.println("Seleccione el servicio:");
+        for (int i = 0; i < servicios.length; i++) {
+            System.out.println((i+1) + ". " + servicios[i].getSimpleName());
+        }
+        
+        int opcion = scanner.nextInt();
+        if (opcion < 1 || opcion > servicios.length) {
+            System.out.println("Opción inválida.");
+            return;
+        }
+        
+        System.out.print("Ingrese el código del servicio: ");
+        int codServicio = scanner.nextInt();
+        
+        // Crear servicio dinámicamente
+        Servicios servicio = crearServicio(servicios[opcion-1], codServicio);
+        if (servicio != null) {
+            ((Soldado)usuario).asignarServicio(servicio);
+            System.out.println("Servicio asignado correctamente.");
+        }
+    }
     
+    private Class<?>[] obtenerServicios() {
+        File dir = new File("src/ejercito");
+        File[] files = dir.listFiles((d, name) -> name.endsWith(".java") && !name.equals("Servicios.java"));
+        Class<?>[] servicios = new Class<?>[files.length];
+        int idx = 0;
+        
+        for (File f : files) {
+            String className = f.getName().replace(".java", "");
+            try {
+                Class<?> clazz = Class.forName("ejercito." + className);
+                if (Servicios.class.isAssignableFrom(clazz) && !clazz.equals(Servicios.class)) {
+                    servicios[idx++] = clazz;
+                }
+            } catch (Exception e) { /* ignorar */ }
+        }
+        
+        Class<?>[] resultado = new Class<?>[idx];
+        System.arraycopy(servicios, 0, resultado, 0, idx);
+        return resultado;
+    }
     
-
-  
+    private Servicios crearServicio(Class<?> clase, int codigo) {
+        try {
+            // Constructor estándar: (int codigo, Date fecha, String nombre)
+            return (Servicios) clase.getConstructor(int.class, Date.class, String.class)
+                .newInstance(codigo, new Date(), "Servicio " + clase.getSimpleName());
+        } catch (Exception e) {
+            System.out.println("Error: No se pudo crear el servicio " + clase.getSimpleName());
+            return null;
+        }
+    }
 }

@@ -1,19 +1,38 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package ejercito;
 
+/**
+ *
+ * @author enzol
+ */
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
-
 public class Soldado extends Usuario implements Menu{
     private Scanner scanner;
-    private Gestion gestion;
     private List<Servicios> serviciosAsignados = new ArrayList<>();
 
-    public Soldado(String nombre, Cuerpo tipoCuerpo, Compania comp, Cuartel cuart, Gestion gestion) {
-        super(nombre, tipoCuerpo, comp, cuart);
-        this.scanner = new Scanner(System.in);
-        this.gestion = gestion;
+    
+    
+    
+    
+    public Soldado(Scanner scanner, int codigo, String nombre, Cuerpo tipoCuerpo, Compania comp, Cuartel cuart, Gestion DB) {
+        super(codigo, nombre, tipoCuerpo, comp, cuart, DB);
+        this.scanner = scanner;
     }
+
+    public Soldado(Scanner scanner, int codigo) {
+        super(codigo);
+        this.scanner = scanner;
+    }
+
+    
+
+
+   
     
     @Override
     public void MostrarDatos(){
@@ -47,7 +66,7 @@ public class Soldado extends Usuario implements Menu{
             System.out.println("3. Salir");
             System.out.print("Seleccione una opción: ");
             
-            int opcion = scanner.nextInt();
+            int opcion = this.scanner.nextInt();
 
             switch(opcion) {
                 case 1:

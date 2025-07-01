@@ -20,16 +20,55 @@ public class Gestion {
         users.add(usuario);
     }
     
+    public void agregarCuartel(Cuartel cuartel) {
+        cuarteles.add(cuartel);
+    }
+    public void agregarCuerpo(Cuerpo cuerpo1) {
+        cuerpos.add(cuerpo1);
+    }
+    public void agregarCompania(Compania compania) {
+        companias.add(compania);
+    }
+   
+    
     // Método para obtener todos los usuarios
     public ArrayList<Usuario> obtenerTodosLosUsuarios() {
         return users;
     }
+    public Cuartel buscarCuartelPorCodigo(int codigo) {
+        for (Cuartel cuart1 : cuarteles) {
+            if ((cuart1.getCodigo()) == codigo) {
+                return cuart1;
+            }
+        }
+        return null; // Cuartel no encontrado
+    }
+
     
     // Método para buscar usuario por código
     public Usuario buscarUsuarioPorCodigo(int codigo) {
         for (Usuario usuario : users) {
             if (usuario.getCodigo() == codigo) {
                 return usuario;
+            }
+        }
+        return null; // Usuario no encontrado
+    }
+    
+    // Método para buscar usuario por código
+    public Cuerpo buscarCuerpoPorCodigo(int codigo) {
+        for (Cuerpo cuerpo : cuerpos) {
+            if (cuerpo.getCodigo() == codigo) {
+                return cuerpo;
+            }
+        }
+        return null; // Usuario no encontrado
+    }
+    
+     public Compania buscarCompaniaPorCodigo(int codigo) {
+        for (Compania comp : companias) {
+            if ((comp.getCodigo()) == codigo) {
+                return comp;
             }
         }
         return null; // Usuario no encontrado
