@@ -134,14 +134,19 @@ public class Oficial extends Usuario implements Menu,CapacidadOficial {
             boolean usuarioYaEnCuartelDestino = cuart1.getUsuarioCuartel().stream()
                 .anyMatch(u -> u.getCodigo() == codigoUser);
             
-            // Verificar si el usuario ya tiene un cuartel asignado por defecto
-            boolean usuarioYaTieneCuartel = usuario1.getCuart() != null;
-            
-            if (usuarioYaEnCuartelDestino || usuarioYaTieneCuartel) {
+            if (usuarioYaEnCuartelDestino) {
                 System.out.println("Error: El usuario con código " + codigoUser + " ya está asignado a este cuartel.");
                 System.out.println("Usuario: " + usuario1.getNombre() + " (Código: " + usuario1.getCodigo() + ")");
                 System.out.println("Cuartel: " + cuart1.getNombre_cuartel() + " (Código: " + cuart1.getCodigo() + ")");
             } else {
+                // Remover al usuario de cualquier otro cuartel antes de asignarlo al nuevo
+                for (int i = 101; i <= 200; i++) {
+                    Cuartel cuartel = this.getDb().buscarCuartelPorCodigo(i); //busca el cuartel por codigo
+                    if (cuartel != null) { // si el cuartel no es nulo
+                        cuartel.getUsuarioCuartel().removeIf(u -> u.getCodigo() == codigoUser); //remueve el usuario del cuartel
+                    }
+                }
+                
                 cuart1.getUsuarioCuartel().add(usuario1);
                 System.out.println("Usuario asignado correctamente al cuartel.");
                 cuart1.MostrarUsuariosAsignados();
@@ -162,9 +167,31 @@ public class Oficial extends Usuario implements Menu,CapacidadOficial {
         Compania compania1 = this.getDb().buscarCompaniaPorCodigo(codigoCompania);
         
         if (usuario1 != null && compania1 != null) {
-            compania1.getUserCompania().add(usuario1);
-            System.out.println("Usuario asignado correctamente a la compañía.");
-            compania1.MostrarUsuariosAsignados();
+            // Verificar si el usuario ya está asignado a alguna compañía
+            boolean usuarioYaAsignado = false;
+            Compania companiaActual = null;
+            
+            // Buscar en todas las compañías si el usuario ya está asignado
+            for (int i = 1; i <= 100; i++) {
+                Compania compania = this.getDb().buscarCompaniaPorCodigo(i);
+                if (compania != null && compania.getUserCompania().stream().anyMatch(u -> u.getCodigo() == codigoUser)) {
+                    usuarioYaAsignado = true;
+                    companiaActual = compania;
+                    break;
+                }
+            }
+            
+            if (usuarioYaAsignado) {
+                System.out.println("Error: El usuario con código " + codigoUser + " ya está asignado a una compañía.");
+                System.out.println("Usuario: " + usuario1.getNombre() + " (Código: " + usuario1.getCodigo() + ")");
+                System.out.println("Compañía actual: " + companiaActual.getDenominacion_compania() + " (Código: " + companiaActual.getCodigo() + ")");
+                System.out.println("Compañía destino: " + compania1.getDenominacion_compania() + " (Código: " + compania1.getCodigo() + ")");
+                System.out.println("Un soldado solo puede pertenecer a una compañía durante todo el servicio militar.");
+            } else {
+                compania1.getUserCompania().add(usuario1);
+                System.out.println("Usuario asignado correctamente a la compañía.");
+                compania1.MostrarUsuariosAsignados();
+            }
         } else {
             if (usuario1 == null) {
                 System.out.println("No se encontró el usuario con código: " + codigoUser);
@@ -181,8 +208,30 @@ public class Oficial extends Usuario implements Menu,CapacidadOficial {
         Cuerpo cuerpo1 = this.getDb().buscarCuerpoPorCodigo(codigoCuerpo);
         
         if (usuario1 != null && cuerpo1 != null) {
-            cuerpo1.getUsuarioAsignado().add(usuario1);
-            System.out.println("Usuario asignado correctamente al cuerpo.");
+            // Verificar si el usuario ya está asignado a algún cuerpo
+            boolean usuarioYaAsignado = false;
+            Cuerpo cuerpoActual = null;
+            
+            // Buscar en todos los cuerpos si el usuario ya está asignado
+            for (int i = 101; i <= 200; i++) {
+                Cuerpo cuerpo = this.getDb().buscarCuerpoPorCodigo(i);
+                if (cuerpo != null && cuerpo.getUsuarioAsignado().stream().anyMatch(u -> u.getCodigo() == codigoUser)) {
+                    usuarioYaAsignado = true;
+                    cuerpoActual = cuerpo;
+                    break;
+                }
+            }
+            
+            if (usuarioYaAsignado) {
+                System.out.println("Error: El usuario con código " + codigoUser + " ya está asignado a un cuerpo.");
+                System.out.println("Usuario: " + usuario1.getNombre() + " (Código: " + usuario1.getCodigo() + ")");
+                System.out.println("Cuerpo actual: " + cuerpoActual.getDenominacion_cuerpo() + " (Código: " + cuerpoActual.getCodigo() + ")");
+                System.out.println("Cuerpo destino: " + cuerpo1.getDenominacion_cuerpo() + " (Código: " + cuerpo1.getCodigo() + ")");
+                System.out.println("Un soldado solo puede pertenecer a un cuerpo durante todo el servicio militar.");
+            } else {
+                cuerpo1.getUsuarioAsignado().add(usuario1);
+                System.out.println("Usuario asignado correctamente al cuerpo.");
+            }
         } else {
             if (usuario1 == null) {
                 System.out.println("No se encontró el usuario con código: " + codigoUser);

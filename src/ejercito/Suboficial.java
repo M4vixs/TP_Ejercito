@@ -2,6 +2,7 @@ package ejercito;
 
 import java.util.Scanner;
 import java.util.Date;
+import java.util.ArrayList;
 import java.io.File;
 
 public class Suboficial extends Usuario implements Menu,CapacidadServicios{
@@ -33,21 +34,31 @@ public class Suboficial extends Usuario implements Menu,CapacidadServicios{
         while (continuar) {
         ConsolaUtil.limpiar();
         System.out.println("\n=== MENÚ SUBOFICIAL ===");
-        System.out.println("1. Ver todos los usuarios");
-        System.out.println("2. Buscar usuario por código");
-        System.out.println("3. Asignar servicio");
-        System.out.println("4. Salir");
+        System.out.println("1. Ver mis datos");
+        System.out.println("2. Ver todos los usuarios");
+        System.out.println("3. Buscar usuario por código");
+        System.out.println("4. Asignar servicio");
+        System.out.println("5. Salir");
         System.out.print("Seleccione una opción: ");
         int opcion = scanner.nextInt();
 
         switch(opcion) {
             case 1:
-                this.getDb().mostrarTodosLosUsuarios();
+                ConsolaUtil.limpiar();
+                System.out.println("\n=== MIS DATOS ===");
+                MostrarDatos();
                 System.out.println("\nPresione Enter para continuar...");
                 scanner.nextLine(); // Esperar Enter
                 scanner.nextLine(); // Esperar Enter
                 break;
             case 2:
+                ConsolaUtil.limpiar();
+                mostrarSoldados();
+                System.out.println("\nPresione Enter para continuar...");
+                scanner.nextLine(); // Esperar Enter
+                scanner.nextLine(); // Esperar Enter
+                break;
+            case 3:
                 System.out.print("Ingrese el código del usuario a buscar: ");
                 int codigo = scanner.nextInt();
                 this.getDb().buscarYMostrarUsuarioPorCodigo(codigo);
@@ -55,14 +66,14 @@ public class Suboficial extends Usuario implements Menu,CapacidadServicios{
                 scanner.nextLine(); // Limpiar buffer
                 scanner.nextLine(); // Esperar Enter
                 break;
-            case 3:
+            case 4:
                 ConsolaUtil.limpiar();
                 asignarServicioASoldado();
                 System.out.println("\nPresione Enter para continuar...");
                 scanner.nextLine(); // Limpiar buffer
                 scanner.nextLine(); // Esperar Enter
                 break;
-            case 4:
+            case 5:
                 continuar = false;
                 break;
             default:
@@ -144,6 +155,39 @@ public class Suboficial extends Usuario implements Menu,CapacidadServicios{
         } catch (Exception e) {
             System.out.println("Error: No se pudo crear el servicio " + clase.getSimpleName());
             return null;
+        }
+    }
+    
+    /**
+     * Muestra solo los soldados del sistema
+     */
+    private void mostrarSoldados() {
+        ArrayList<Usuario> usuarios = this.getDb().obtenerTodosLosUsuarios();
+        ArrayList<Usuario> soldados = new ArrayList<>();
+        
+        // Filtrar solo los soldados
+        for (Usuario usuario : usuarios) {
+            if (usuario instanceof Soldado) {
+                soldados.add(usuario);
+            }
+        }
+        
+        if (soldados.isEmpty()) {
+            System.out.println("No hay soldados registrados en el sistema.");
+            return;
+        }
+        
+        System.out.println("\n=== LISTA DE SOLDADOS ===");
+        System.out.println("Total de soldados: " + soldados.size());
+        System.out.println("----------------------------------------");
+        
+        for (Usuario soldado : soldados) {
+            System.out.println("Código: " + soldado.getCodigo());
+            System.out.println("Nombre: " + soldado.getNombre());
+            System.out.println("Cuerpo: " + soldado.getTipoCuerpo().getDenominacion_cuerpo());
+            System.out.println("Compañía: " + soldado.getComp().getDenominacion_compania());
+            System.out.println("Cuartel: " + soldado.getCuart().getNombre_cuartel());
+            System.out.println("----------------------------------------");
         }
     }
 }
